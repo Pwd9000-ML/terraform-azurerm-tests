@@ -5,7 +5,11 @@
 Do you need a quick way to test if your terraform code changes will work?  
 This Action can be used to run **Terraform tests** using an **AZURE** backend in a variety of scenarios.  
 
-Say for example you are scanning and checking your terraform code with **dependabot** and **dependabot** raises a PR showing that you have dependencies that needs their versions upgraded. You can use this action to create a **GitHub Workflow** to run when **dependabot** creates the PR and run a series of tests.  
+Say for example you are scanning and checking your terraform code with **dependabot** and **dependabot** raises a PR showing that you have dependencies that needs their versions upgraded. You can use this action to create a **GitHub Workflow** to run when **dependabot** creates the PR and run a series of tests before merging the PR.  
+
+This action can also be used to run tests on any sort of changes in your terraform code and is not limited to usage with **dependabot**.  
+
+**NOTE:** It is best to write a separate terraform configuration specifically for testing. See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
 
 ## Test Types
 
@@ -13,46 +17,63 @@ What sort of tests can be run using this Action?
 
 This action has a special input called `test_type:` which can be used to run different types of tests:  
 
-* `test_type: "plan"`: This test type will only perform a terraform `plan` ONLY against a terraform configuration.
-* `test_type: "plan-apply"`: This test type will perform a terraform `plan` AND a terraform `apply` in sequence against a terraform configuration.
-* `test_type: "plan-apply-destroy"`: This test type will perform a terraform `plan`, a terraform `apply` AND a terraform `destroy` in sequence against a terraform configuration.
-
+* `test_type: "plan"`
+    * This test type will only perform a terraform `plan` ONLY against a terraform configuration.
+* `test_type: "plan-apply"`
+    * This test type will perform a terraform `plan` AND a terraform `apply` in sequence against a terraform configuration.
+* `test_type: "plan-apply-destroy"`
+    * This test type will perform a terraform `plan`, a terraform `apply` AND a terraform `destroy` in sequence against a terraform configuration.
 
 See my [detailed tutorial]() for more usage details.  
+
+The following terraform tasks are run depending on the test chosen: `fmt`, `validate`, `init`, `plan`, `apply`, `destroy`.  
+Any issues detected in these terraform tasks are commented on the PR and a valid `github_token` is needed.  
+`plan` output is always commented onto the PR.  
+
+![image.png]()
+
+Additionally tests will include `plan` artifacts of the relevant `apply` and `destroy` operations added to the workflow.
+
+![image.png]()
+
+**WARNING:** Apply tests will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
+See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
 
 ## Installation
 
 ```yaml
 steps:
-  - name: Dev TF Plan
-    uses: Pwd9000-ML/terraform-azurerm-plan@v1.2.0
+  - name: Run-Tests
+    uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
     with:
-      path: "path-to-TFmodule"                 ## (Optional) Specify path TF module relevant to repo root. Default="."
-      plan_mode: "deploy"                      ## (Optional) Specify plan mode. Valid options are "deploy" or "destroy". Default="deploy"
-      tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default="latest"
-      tf_vars_file: "tfvars-file-name"         ## (Required) Specifies Terraform TFVARS file name inside module path
-      tf_key: "state-file-name"                ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact
-      enable_TFSEC: true                       ## (Optional) Enable TFSEC IaC scans (Private repo requires GitHub enterprise). Default=false
+      test_type: plan                          ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+      path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
+      tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+      tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
+      tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
       az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
       az_storage_acc: "storage-account-name"   ## (Required) AZ backend - AZURE terraform backend storage account
       az_container_name: "container-name"      ## (Required) AZ backend - AZURE storage container hosting state files 
-      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required) ARM Client ID 
-      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required)ARM Client Secret
-      arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required) ARM Subscription ID
-      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required) ARM Tenant ID
+      arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required - Dependabot Secrets) ARM Client ID 
+      arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required - Dependabot Secrets) ARM Client Secret
+      arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required - Dependabot Secrets) ARM Subscription ID
+      arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required - Dependabot Secrets) ARM Tenant ID
       github_token: ${{ secrets.GITHUB_TOKEN }} ## (Required) Needed to comment output on PR's. ${{ secrets.GITHUB_TOKEN }} already has permissions.
 ```
 
 ## Examples
 
-Check out the following [GitHub repository](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments) for a full working demo and usage examples of this action under a workflow called [Marketplace_Example.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml).
+Check out the following [GitHub repository](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments) for a full working demo and usage examples of this action under a workflow called [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml).
 
-## Usage Example 1 - Deploy Plan and Apply Deploy (BUILD)
+## Usage Example 1 - Run Test Plan Only
 
-Usage example of a terraform deploy plan with applying the deploy (creating resources).
+Only perform a terraform plan against a terraform **test** module.
 
 ```yaml
-name: "TF-Deploy"
+#This workflow will automatically run tests when Dependabot opens a PR.
+#Tests are only partial and is performed by creating a (PLAN ONLY) and outputting any issues detected to the PR.
+
+name: "Marketplace-Example-Test-Plan-Only"
 on:
   workflow_dispatch:
   pull_request:
@@ -60,57 +81,49 @@ on:
       - master
 
 jobs:
-  Plan_Dev_Deploy:
+# Dependabot will open a PR on terraform version changes, this 'dependabot' job is only used to test TF version changes by running a plan.
+  Run_Tests:
     runs-on: ubuntu-latest
-    environment: null #(Optional) If using GitHub Environments          
+    permissions:
+      pull-requests: write
+      issues: write
+      repository-projects: write
+    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Dev TF Plan Deploy
-        uses: Pwd9000-ML/terraform-azurerm-plan@v1.2.0
+      - name: Plan-Only
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
         with:
-          path: "path-to-TFmodule"                 ## (Optional) Specify path TF module relevant to repo root. Default="."
-          plan_mode: "deploy"                      ## (Optional) Specify plan mode. Valid options are "deploy" or "destroy". Default="deploy"
-          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default="latest"
-          tf_vars_file: "tfvars-file-name"         ## (Required) Specifies Terraform TFVARS file name inside module path
-          tf_key: "state-file-name"                ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact
-          enable_TFSEC: true                       ## (Optional) Enable TFSEC IaC scans (Private repo requires GitHub enterprise). Default=false
+          test_type: plan                          ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+          path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
+          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+          tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
+          tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
           az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
           az_storage_acc: "storage-account-name"   ## (Required) AZ backend - AZURE terraform backend storage account
           az_container_name: "container-name"      ## (Required) AZ backend - AZURE storage container hosting state files 
-          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required) ARM Client ID 
-          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required)ARM Client Secret
-          arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required) ARM Subscription ID
-          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required) ARM Tenant ID
+          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required - Dependabot Secrets) ARM Client ID 
+          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required - Dependabot Secrets) ARM Client Secret
+          arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required - Dependabot Secrets) ARM Subscription ID
+          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required - Dependabot Secrets) ARM Tenant ID
           github_token: ${{ secrets.GITHUB_TOKEN }} ## (Required) Needed to comment output on PR's. ${{ secrets.GITHUB_TOKEN }} already has permissions.
-
-  Apply_Dev_Deploy:
-    needs: Plan_Dev_Deploy
-    runs-on: ubuntu-latest
-    environment: Development #(Optional) If using GitHub Environments      
-    steps:
-      - name: Dev TF Deploy
-        uses: Pwd9000-ML/terraform-azurerm-apply@v1.2.0
-        with:
-          plan_mode: "deploy"                      ## (Optional) Specify plan mode. Valid options are "deploy" or "destroy". Default="deploy"
-          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default="latest"
-          tf_key: "state-file-name"                ## (Required) Specifies name of the terraform state file and plan artifact to download
-          az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage acc 
-          az_storage_acc: "storage-account-name"   ## (Required) AZ backend - AZURE terraform backend storage acc 
-          az_container_name: "container-name"      ## (Required) AZ backend - AZURE storage container hosting state files 
-          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required) ARM Client ID 
-          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required)ARM Client Secret
-          arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required) ARM Subscription ID
-          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required) ARM Tenant ID
 ```
 
-## Usage Example 2 - Destroy Plan and Apply Destroy (DESTROY)
+![image.png]()
 
-Usage example of a terraform destroy plan with applying the destroy (removing resources).
+## Usage Example 2 - Run Test Plan and Apply Plan
+
+**WARNING:** This test will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
+See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
 
 ```yaml
-name: "TF-Destroy"
+#This workflow will automatically run tests when Dependabot opens a PR.
+#Tests are only partial and is performed by creating a (PLAN AND APPLY) and outputting any issues detected to the PR.
+#WARNING!!! This TEST will create resources!!
+
+name: "Marketplace-Example-Test-Apply"
 on:
   workflow_dispatch:
   pull_request:
@@ -118,64 +131,87 @@ on:
       - master
 
 jobs:
-  Plan_Dev_Destroy:
+# Dependabot will open a PR on terraform version changes, this 'dependabot' job is used to test TF version changes by running a plan and an apply.
+  Run_Tests:
     runs-on: ubuntu-latest
-    environment: null #(Optional) If using GitHub Environments          
+    permissions:
+      pull-requests: write
+      issues: write
+      repository-projects: write
+    if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Dev TF Plan Destroy
-        uses: Pwd9000-ML/terraform-azurerm-plan@v1.2.0
+      - name: Plan-Apply
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
         with:
-          path: "path-to-TFmodule"                 ## (Optional) Specify path TF module relevant to repo root. Default="."
-          plan_mode: "destroy"                     ## (Optional) Specify plan mode. Valid options are "deploy" or "destroy". Default="deploy"
-          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default="latest"
-          tf_vars_file: "tfvars-file-name"         ## (Required) Specifies Terraform TFVARS file name inside module path
-          tf_key: "state-file-name"                ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact
-          enable_TFSEC: true                       ## (Optional) Enable TFSEC IaC scans (Private repo requires GitHub enterprise). Default=false
+          test_type: plan-apply                    ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+          path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
+          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+          tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
+          tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
           az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
           az_storage_acc: "storage-account-name"   ## (Required) AZ backend - AZURE terraform backend storage account
           az_container_name: "container-name"      ## (Required) AZ backend - AZURE storage container hosting state files 
-          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required) ARM Client ID 
-          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required)ARM Client Secret
-          arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required) ARM Subscription ID
-          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required) ARM Tenant ID
+          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required - Dependabot Secrets) ARM Client ID 
+          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required - Dependabot Secrets) ARM Client Secret
+          arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required - Dependabot Secrets) ARM Subscription ID
+          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required - Dependabot Secrets) ARM Tenant ID
           github_token: ${{ secrets.GITHUB_TOKEN }} ## (Required) Needed to comment output on PR's. ${{ secrets.GITHUB_TOKEN }} already has permissions.
-
-  Apply_Dev_Destroy:
-    needs: Plan_Dev_Destroy
-    runs-on: ubuntu-latest
-    environment: Development #(Optional) If using GitHub Environments      
-    steps:
-      - name: Dev TF Destroy
-        uses: Pwd9000-ML/terraform-azurerm-apply@v1.2.0
-        with:
-          plan_mode: "destroy"                     ## (Optional) Specify plan mode. Valid options are "deploy" or "destroy". Default="deploy"
-          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default="latest"
-          tf_key: "state-file-name"                ## (Required) Specifies name of the terraform state file and plan artifact to download
-          az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage acc 
-          az_storage_acc: "storage-account-name"   ## (Required) AZ backend - AZURE terraform backend storage acc 
-          az_container_name: "container-name"      ## (Required) AZ backend - AZURE storage container hosting state files 
-          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required) ARM Client ID 
-          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required)ARM Client Secret
-          arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required) ARM Subscription ID
-          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required) ARM Tenant ID
 ```
 
-In both examples the terraform plan will be created and is compressed and published to the workflow as an artifact using the same name of the inputs `[plan_mode]-[tf_key]`:  
+![image.png]()
 
-![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-plan/master/assets/artifact.png)  
+## Usage Example 3 - Run Test Plan -> Apply -> Destroy
 
-The artifacts will either contain a deployment plan called `deploy_plan.tfplan` if `plan_mode: "deploy"` is used, or a destroy plan called `destroy_plan.tfplan` if `plan_mode: "destroy"` is used.  
+**WARNING:** This test will create resources in your environment. Although the resources are immediately destroyed after being built. Please be aware of cost or errors that may cause the workflow to fail and leave resources behind, also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
+See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
 
-The terraform apply action will download and apply the plan inside of the artifact created by the plan action using the same `[plan_mode]-[tf_key]` and apply the relevant plan based on which `plan_mode` was used in the creation of the plan artifact.  
+```yaml
+#This workflow will automatically run tests when Dependabot opens a PR.
+#Tests are full end-to-end and is performed by creating a (PLAN AND APPLY AND DESTROY) and outputting any issues detected to the PR.
+#WARNING!!! This TEST will create resources!!
 
-**NOTE:** If `enable_TFSEC` is set to `true` on plan stage, Terraform IaC will be scanned using TFSEC and results are published to the GitHub Project `Security` tab:  
+name: "Marketplace-Example-Test-Apply-Destroy"
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - master
 
-![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-plan/master/assets/tfsec.png)  
+jobs:
+# Dependabot will open a PR on terraform version changes, this 'dependabot' job is used to test TF version changes by running a plan, apply and destroy.
+  Run_Tests:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      issues: write
+      repository-projects: write
+    if: ${{ github.actor == 'dependabot[bot]' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
 
-If using a private repository, GitHub enterprise is needed when enabling TFSEC. However if a public repository is used, code analysis is included and TFSEC can be enabled on public repositories without the need for a GitHub enterprise account.  
+      - name: Plan-Apply-Destroy
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
+        with:
+          test_type: plan-apply-destroy                    ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+          path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
+          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+          tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
+          tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
+          az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
+          az_storage_acc: "storage-account-name"   ## (Required) AZ backend - AZURE terraform backend storage account
+          az_container_name: "container-name"      ## (Required) AZ backend - AZURE storage container hosting state files 
+          arm_client_id: ${{ secrets.ARM_CLIENT_ID }}             ## (Required - Dependabot Secrets) ARM Client ID 
+          arm_client_secret: ${{ secrets.ARM_CLIENT_SECRET }}     ## (Required - Dependabot Secrets) ARM Client Secret
+          arm_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }} ## (Required - Dependabot Secrets) ARM Subscription ID
+          arm_tenant_id: ${{ secrets.ARM_TENANT_ID }}             ## (Required - Dependabot Secrets) ARM Tenant ID
+          github_token: ${{ secrets.GITHUB_TOKEN }} ## (Required) Needed to comment output on PR's. ${{ secrets.GITHUB_TOKEN }} already has permissions.
+```
+
+![image.png]()
 
 ## Inputs
 
