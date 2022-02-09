@@ -44,11 +44,11 @@ See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terrafor
 ```yaml
 steps:
   - name: Run-Tests
-    uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
+    uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
     with:
       test_type: plan                          ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
       path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
-      tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+      tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
       tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
       tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
       az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
@@ -83,7 +83,7 @@ on:
 jobs:
 # Dependabot will open a PR on terraform version changes, this 'dependabot' job is only used to test TF version changes by running a plan.
   Run_Tests:
-    runs-on: ubuntu-latest
+    dependabot-plan-only: ubuntu-latest
     permissions:
       pull-requests: write
       issues: write
@@ -94,11 +94,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Plan-Only
-        uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
         with:
           test_type: plan                          ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
-          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
           tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
           tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
           az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
@@ -144,11 +144,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Plan-Apply
-        uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
         with:
           test_type: plan-apply                    ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
-          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
           tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
           tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
           az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
@@ -194,11 +194,11 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Plan-Apply-Destroy
-        uses: Pwd9000-ML/terraform-azurerm-tests@v1.1.0
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
         with:
           test_type: plan-apply-destroy                    ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
-          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.
+          tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
           tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
           tf_key: "test-state-file-name"           ## (Required) AZ backend - Specifies name that will be given to terraform state file and plan artifact (testing state)
           az_resource_group: "resource-group-name" ## (Required) AZ backend - AZURE Resource Group hosting terraform backend storage account
