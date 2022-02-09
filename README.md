@@ -17,20 +17,20 @@ What sort of tests can be run using this Action?
 
 This action has a special input called `test_type:` which can be used to run different types of tests:  
 
-* `test_type: "plan"`
+* **test_type: "plan"**
     * This test type will only perform a terraform `plan` ONLY against a terraform configuration.
-* `test_type: "plan-apply"`
+* **test_type: "plan-apply"**
     * This test type will perform a terraform `plan` AND a terraform `apply` in sequence against a terraform configuration.
-* `test_type: "plan-apply-destroy"`
+* **test_type: "plan-apply-destroy"**
     * This test type will perform a terraform `plan`, a terraform `apply` AND a terraform `destroy` in sequence against a terraform configuration.
 
-See my [detailed tutorial]() for more usage details.  
+See my [detailed tutorial]() for more usage details.  (Coming soon)
 
-The following terraform tasks are run depending on the test chosen: `fmt`, `validate`, `init`, `plan`, `apply`, `destroy`.  
+The following terraform tasks are tested: `fmt`, `validate`, `init`, `plan`, `apply`, `destroy`.  
 Any issues detected in these terraform tasks are commented on the PR and a valid `github_token` is needed.  
-`plan` output is always commented onto the PR.  
+**plan output** is always commented onto the PR.  
 
-![image.png]()
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/planpr.png)
 
 Additionally tests will include `plan` artifacts of the relevant `apply` and `destroy` operations added to the workflow.
 
@@ -111,7 +111,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }} ## (Required) Needed to comment output on PR's. ${{ secrets.GITHUB_TOKEN }} already has permissions.
 ```
 
-![image.png]()
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/plan.png)
+
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/planpr.png)
 
 ## Usage Example 2 - Run Test Plan and Apply Plan
 
@@ -161,7 +163,9 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }} ## (Required) Needed to comment output on PR's. ${{ secrets.GITHUB_TOKEN }} already has permissions.
 ```
 
-![image.png]()
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/apply.png)
+
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/planpr.png)
 
 ## Usage Example 3 - Run Test Plan -> Apply -> Destroy
 
@@ -211,7 +215,11 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }} ## (Required) Needed to comment output on PR's. ${{ secrets.GITHUB_TOKEN }} already has permissions.
 ```
 
-![image.png]()
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/destroy.png)
+
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/planpr.png)
+
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/destroypr.png)
 
 ## Inputs
 
