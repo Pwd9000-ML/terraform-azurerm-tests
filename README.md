@@ -7,6 +7,8 @@ This Action can be used to run **Terraform tests** using an **AZURE** backend in
 
 Say for example you are scanning and checking your terraform code with **dependabot** and **dependabot** raises a PR showing that you have dependencies that needs their versions upgraded. You can use this action to create a **GitHub Workflow** to run when **dependabot** creates the PR and run a series of tests before merging the PR.  
 
+![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/pr.png)
+
 This action can also be used to run tests on any sort of changes in your terraform code and is not limited to usage with **dependabot**.  
 
 **NOTE:** It is best to write a separate terraform configuration specifically for testing. See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
@@ -46,7 +48,7 @@ steps:
   - name: Run-Tests
     uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
     with:
-      test_type: plan                          ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+      test_type: plan                          ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
       path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
       tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
       tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
@@ -96,7 +98,7 @@ jobs:
       - name: Plan-Only
         uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
         with:
-          test_type: plan                          ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+          test_type: plan                          ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
           tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
           tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
@@ -148,7 +150,7 @@ jobs:
       - name: Plan-Apply
         uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
         with:
-          test_type: plan-apply                    ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+          test_type: plan-apply                    ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
           tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
           tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
@@ -200,7 +202,7 @@ jobs:
       - name: Plan-Apply-Destroy
         uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
         with:
-          test_type: plan-apply-destroy                    ## (Required) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
+          test_type: plan-apply-destroy            ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
           tf_version: "latest"                     ## (Optional) Specifies version of Terraform to use. e.g: 1.0.0 Default=latest.
           tf_vars_file: "test-tfvars-file-name"    ## (Required) Specifies Terraform TFVARS file name inside module path (Testing vars)
@@ -225,12 +227,11 @@ jobs:
 
 | Input | Required |Description |Default |
 | ----- | -------- | ---------- | ------ |
-| `path` | FALSE | Specify path to Terraform module relevant to repo root. | "." |
-| `plan_mode` | FALSE | Specify plan mode. Valid options are `deploy` or `destroy`. | "deploy" |
+| `test_type` | FALSE | Specify test type. Valid options are `plan`, `plan-apply`, `plan-apply-destroy`. | "plan" |
+| `path` | FALSE | Specify path to Terraform module relevant to repo root. (Test module) | "." |
 | `tf_version` | FALSE | Specifies the Terraform version to use. | "latest" |
-| `tf_vars_file` | TRUE | Specifies Terraform TFVARS file name inside module path. | N/A |
+| `tf_vars_file` | TRUE | Specifies Terraform TFVARS file name inside module path. (Test vars) | N/A |
 | `tf_key` | TRUE | AZ backend - Specifies name that will be given to terraform state file and plan artifact| N/A |
-| `enable_TFSEC` | FALSE | Enable IaC TFSEC scan, results are posted to GitHub Project Security Tab. (Private repos require GitHub enterprise). | FALSE |
 | `az_resource_group` | TRUE | AZ backend - AZURE Resource Group name hosting terraform backend storage account | N/A |
 | `az_storage_acc` | TRUE | AZ backend - AZURE terraform backend storage account name | N/A |
 | `az_container_name` | TRUE | AZ backend - AZURE storage container hosting state files  | N/A |
@@ -242,17 +243,12 @@ jobs:
 
 ## Outputs
 
-None.  
-
-* Plan is uploaded to workflow as an artifact. (Can be deployed using `Pwd9000-ML/terraform-azurerm-apply` action.)
-* In a Pull Request, `plan` output will be added as a comment on the PR. Additionally failures on `fmt`, `init` and `validate` will also be added to the PR.
+* Test terraform plans are uploaded to workflow as artifacts.
+* In a Pull Request, any `failures` for `fmt`, `init`, `validate` and any `plans` are added as a comments on the PR.
 
 ## Plan output to Pull Request
 
-![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-plan/master/assets/pr.png)  
-
 The `github_token` input must be set for the PR comment to be added. `${{ secrets.GITHUB_TOKEN }}` already has permissions, but if using own token, ensure repo scope.  
-Plan failures on `fmt`, `init` and `validate` will also be added to the PR.
 
 ## Versions of runner that can be used
 
