@@ -39,7 +39,7 @@ Additionally tests will include `plan` artifacts of the relevant `apply` and `de
 ![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/destroy.png)
 
 **WARNING:** Apply tests will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
-See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Test.yml) for examples.
+See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
 
 ## Installation
 
