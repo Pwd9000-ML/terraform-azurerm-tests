@@ -1,0 +1,139 @@
+name: 'Terraform Tests for AZURE' 
+description: 'Run tests against Terraform modules using AzureRM backend'
+
+inputs:
+  test_type:
+    description: '(Required) Specify a test type. Valid options are "plan", "plan-apply", "plan-apply-destroy" Default="plan".'
+    required: true
+    type: string
+    default: plan
+
+  path:
+    description: '(Optional) Specifies the path of the root terraform module.'
+    required: false
+    type: string
+    default: .
+
+  tf_version:
+    description: '(Optional) Specifies version of Terraform to use. e.g: 1.1.0 Default=latest.'
+    required: false
+    type: string
+    default: latest
+
+  tf_vars_file:
+    description: '(Required) Specifies the Terraform TFVARS file relevant to module path.'
+    required: true
+    type: string
+
+  tf_key:
+    description: '(Required) Specifies the Terraform state file name for this plan.'
+    required: true
+    type: string
+
+  az_resource_group:
+    description: '(Required) Specifies the Azure Resource Group where the backend storage account is hosted.'
+    required: true
+    type: string
+
+  az_storage_acc:
+    description: '(Required) Specifies the Azure Storage Account where the backend state is hosted.'
+    required: true
+    type: string
+
+  az_container_name:
+    description: '(Required) Specifies the Azure Storage account container where backend Terraform state is hosted.'
+    required: true
+    type: string
+
+  arm_client_id:
+    description: 'Specifies the Azure ARM CLIENT ID.'
+    required: true
+
+  arm_client_secret:
+    description: 'Specifies the Azure ARM CLIENT SECRET.'
+    required: true
+
+  arm_subscription_id:
+    description: 'Specifies the Azure ARM SUBSCRIPTION ID.'
+    required: true
+
+  arm_tenant_id:
+    description: 'Specifies the Azure ARM TENANT ID.'
+    required: true
+
+  github_token:
+    description: 'Specify a valid GITHUB TOKEN.'
+    required: true
+
+# https://actions-cool.github.io/github-action-branding/
+branding:
+  icon: 'check'
+  color: 'blue'
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Plan ONLY
+      if: ${{ contains(inputs.test_type, 'plan') }}
+      uses: Pwd9000-ML/terraform-azurerm-plan@v1.1.1
+      with:
+        path: ${{ inputs.path }}
+        tf_version: ${{ inputs.tf_version }}
+        tf_vars_file: ${{ inputs.tf_vars_file }}
+        tf_key: ${{ inputs.tf_key }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_acc: ${{ inputs.az_storage_acc }}
+        az_container_name: ${{ inputs.az_container_name }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_client_secret: ${{ inputs.arm_client_secret }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
+        github_token: ${{ inputs.github_token }}
+
+    - name: Plan -> Apply
+      if: ${{ contains(inputs.test_type, 'apply') }}
+      uses: Pwd9000-ML/terraform-azurerm-apply@v1.1.0
+      with:
+        tf_version: ${{ inputs.tf_version }}
+        tf_key: ${{ inputs.tf_key }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_acc: ${{ inputs.az_storage_acc }}
+        az_container_name: ${{ inputs.az_container_name }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_client_secret: ${{ inputs.arm_client_secret }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
+
+    - name: Plan -> Apply -> Destroy (plan)
+      if: ${{ contains(inputs.test_type, 'destroy') }}
+      uses: Pwd9000-ML/terraform-azurerm-plan@v1.1.1
+      with:
+        path: ${{ inputs.path }}
+        plan_mode: "destroy"
+        tf_version: ${{ inputs.tf_version }}
+        tf_vars_file: ${{ inputs.tf_vars_file }}
+        tf_key: ${{ inputs.tf_key }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_acc: ${{ inputs.az_storage_acc }}
+        az_container_name: ${{ inputs.az_container_name }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_client_secret: ${{ inputs.arm_client_secret }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
+        github_token: ${{ inputs.github_token }}
+
+    - name: Plan -> Apply -> Destroy (destroy)
+      if: ${{ contains(inputs.test_type, 'destroy') }}
+      uses: Pwd9000-ML/terraform-azurerm-apply@v1.1.0
+      with:
+        plan_mode: "destroy"
+        tf_version: ${{ inputs.tf_version }}
+        tf_key: ${{ inputs.tf_key }}
+        az_resource_group: ${{ inputs.az_resource_group }}
+        az_storage_acc: ${{ inputs.az_storage_acc }}
+        az_container_name: ${{ inputs.az_container_name }}
+        arm_client_id: ${{ inputs.arm_client_id }}
+        arm_client_secret: ${{ inputs.arm_client_secret }}
+        arm_subscription_id: ${{ inputs.arm_subscription_id }}
+        arm_tenant_id: ${{ inputs.arm_tenant_id }}
