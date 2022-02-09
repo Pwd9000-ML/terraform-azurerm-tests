@@ -30,7 +30,8 @@ See my [detailed tutorial]() for more usage details.  (Coming soon)
 
 The following terraform tasks are tested: `fmt`, `validate`, `init`, `plan`, `apply`, `destroy`.  
 Any issues detected in these terraform tasks are commented on the PR and a valid `github_token` is needed.  
-**plan output** is always commented onto the PR.  
+
+**Plan output** is always commented onto the PR.  
 
 ![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/planpr.png)
 
@@ -38,7 +39,8 @@ Additionally tests will include `plan` artifacts of the relevant `apply` and `de
 
 ![image.png](https://raw.githubusercontent.com/Pwd9000-ML/terraform-azurerm-tests/master/assets/destroy.png)
 
-**WARNING:** Apply tests will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
+**WARNING:** Apply tests will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test tfvars file.  
+
 See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
 
 ## Installation
@@ -119,7 +121,7 @@ jobs:
 
 ## Usage Example 2 - Run Test Plan and Apply Plan
 
-**WARNING:** This test will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
+**WARNING:** This test will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test tfvars file.  
 See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
 
 ```yaml
@@ -171,7 +173,7 @@ jobs:
 
 ## Usage Example 3 - Run Test Plan -> Apply -> Destroy
 
-**WARNING:** This test will create resources in your environment. Although the resources are immediately destroyed after being built. Please be aware of cost or errors that may cause the workflow to fail and leave resources behind, also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
+**WARNING:** This test will create resources in your environment. Although the resources are immediately destroyed after being built. Please be aware of cost or errors that may cause the workflow to fail and leave resources behind, also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test tfvars file.  
 See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
 
 ```yaml
