@@ -123,7 +123,7 @@ runs:
         arm_tenant_id: ${{ inputs.arm_tenant_id }}
         github_token: ${{ inputs.github_token }}
 
-    - name: Plan -> Apply -> Destroy (destroy)
+    - name: Plan -> Apply -> Destroy (apply)
       if: ${{ contains(inputs.test_type, 'destroy') }}
       uses: Pwd9000-ML/terraform-azurerm-apply@v1.1.0
       with:
