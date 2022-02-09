@@ -82,7 +82,7 @@ runs:
         tf_version: ${{ inputs.tf_version }}
         tf_vars_file: ${{ inputs.tf_vars_file }}
         tf_key: ${{ inputs.tf_key }}
-        enable_tfsec: false
+        enable_tfsec: true
         az_resource_group: ${{ inputs.az_resource_group }}
         az_storage_acc: ${{ inputs.az_storage_acc }}
         az_container_name: ${{ inputs.az_container_name }}
