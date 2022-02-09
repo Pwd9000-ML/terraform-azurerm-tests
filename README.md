@@ -11,7 +11,7 @@ Say for example you are scanning and checking your terraform code with **dependa
 
 This action can also be used to run tests on any sort of changes in your terraform code and is not limited to usage with **dependabot**.  
 
-**NOTE:** It is best to write a separate terraform configuration specifically for testing. See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
+**NOTE:** It is best to write a separate terraform configuration specifically for testing. See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
 
 ## Test Types
 
@@ -65,7 +65,7 @@ steps:
 
 ## Examples
 
-Check out the following [GitHub repository](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments) for a full working demo and usage examples of this action under a workflow called [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml).
+Check out the following [GitHub repository](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments) for a full working demo and usage examples of this action under a workflow called [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml).
 
 ## Usage Example 1 - Run Test Plan Only
 
@@ -120,7 +120,7 @@ jobs:
 ## Usage Example 2 - Run Test Plan and Apply Plan
 
 **WARNING:** This test will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
-See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
+See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
 
 ```yaml
 #This workflow will automatically run tests when Dependabot opens a PR.
@@ -172,7 +172,7 @@ jobs:
 ## Usage Example 3 - Run Test Plan -> Apply -> Destroy
 
 **WARNING:** This test will create resources in your environment. Although the resources are immediately destroyed after being built. Please be aware of cost or errors that may cause the workflow to fail and leave resources behind, also please be aware of the environment used. When applying new resources ensure you are using a test subscription or resource group inside of your configuration file being targeted by the `path:` input.  
-See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example.yml) for examples.
+See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
 
 ```yaml
 #This workflow will automatically run tests when Dependabot opens a PR.
