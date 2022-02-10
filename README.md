@@ -65,7 +65,9 @@ steps:
 
 ## Examples
 
-Check out the following [GitHub repository](https://github.com/Pwd9000-ML/terraform-azurerm-dynamic-subnets) for a full working demo and usage examples of this action under a workflow called [dependency-tests.yml](https://github.com/Pwd9000-ML/terraform-azurerm-dynamic-subnets/blob/master/.github/workflows/dependency-tests.yml).
+Check out the following [GitHub repository](https://github.com/Pwd9000-ML/terraform-azurerm-dynamic-subnets) for a full working demo and usage examples of this action under a workflow called [dependency-tests.yml](https://github.com/Pwd9000-ML/terraform-azurerm-dynamic-subnets/blob/master/.github/workflows/dependency-tests.yml).  
+
+The repository hosts the public terraform registry module [AZURERM - dynamic-subnets](https://registry.terraform.io/modules/Pwd9000-ML/dynamic-subnets/azurerm/latest).  
 
 ## Usage Example 1 - Run Test Plan Only
 
