@@ -105,6 +105,14 @@ runs:
         arm_subscription_id: ${{ inputs.arm_subscription_id }}
         arm_tenant_id: ${{ inputs.arm_tenant_id }}
 
+    # Wait cool down to destroy immediately after apply
+    - name: Cool down timer
+      if: ${{ contains(inputs.test_type, 'destroy') }}
+      shell: bash
+      id: wait
+      run: sleep 60
+      working-directory: ${{ inputs.path }}
+
     - name: Plan -> Apply -> Destroy (plan)
       if: ${{ contains(inputs.test_type, 'destroy') }}
       uses: Pwd9000-ML/terraform-azurerm-plan@v1.2.0
