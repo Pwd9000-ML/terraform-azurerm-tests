@@ -11,7 +11,7 @@ Say for example you are scanning and checking your terraform code with **dependa
 
 This action can also be used to run tests on any sort of changes in your terraform code and is not limited to usage with **dependabot**.  
 
-**NOTE:** It is best to write a separate terraform configuration specifically for testing. See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
+**NOTE:** It is best to write a separate terraform configuration specifically for testing. See [dependency-tests.yml](https://github.com/Pwd9000-ML/terraform-azurerm-dynamic-subnets/blob/master/.github/workflows/dependency-tests.yml) for examples.
 
 ## Test Types
 
@@ -65,7 +65,7 @@ steps:
 
 ## Examples
 
-Check out the following [GitHub repository](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments) for a full working demo and usage examples of this action under a workflow called [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml).
+Check out the following [GitHub repository](https://github.com/Pwd9000-ML/terraform-azurerm-dynamic-subnets) for a full working demo and usage examples of this action under a workflow called [dependency-tests.yml](https://github.com/Pwd9000-ML/terraform-azurerm-dynamic-subnets/blob/master/.github/workflows/dependency-tests.yml).
 
 ## Usage Example 1 - Run Test Plan Only
 
