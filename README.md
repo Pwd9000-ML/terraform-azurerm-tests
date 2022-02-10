@@ -41,8 +41,6 @@ Additionally tests will include `plan` artifacts of the relevant `apply` and `de
 
 **WARNING:** Apply tests will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test tfvars file.  
 
-See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
-
 ## Installation
 
 ```yaml
@@ -121,8 +119,7 @@ jobs:
 
 ## Usage Example 2 - Run Test Plan and Apply Plan
 
-**WARNING:** This test will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test tfvars file.  
-See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
+**WARNING:** This test will create resources in your environment. Please be aware of cost and also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test `TFVARS` file.  
 
 ```yaml
 #This workflow will automatically run tests when Dependabot opens a PR.
@@ -173,8 +170,7 @@ jobs:
 
 ## Usage Example 3 - Run Test Plan -> Apply -> Destroy
 
-**WARNING:** This test will create resources in your environment. Although the resources are immediately destroyed after being built. Please be aware of cost or errors that may cause the workflow to fail and leave resources behind, also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test tfvars file.  
-See [Marketplace_Example_Tests.yml](https://github.com/Pwd9000-ML/Azure-Terraform-Deployments/blob/master/.github/workflows/Marketplace_Example_Tests.yml) for examples.
+**WARNING:** This test will create resources in your environment. Although the resources are immediately destroyed after being built. Please be aware of cost or errors that may cause the workflow to fail and leave resources behind, also please be aware of the environment used. When applying new resources ensure you are using a test subscription or test resource group inside of your test configuration file being targeted by the `path:` input or by using testing vars via a test `TFVARS` file.  
 
 ```yaml
 #This workflow will automatically run tests when Dependabot opens a PR.
