@@ -26,7 +26,7 @@ This action has a special input called `test_type:` which can be used to run dif
 * **test_type: "plan-apply-destroy"**
     * This test type will perform a terraform `plan`, a terraform `apply` AND a terraform `destroy` in sequence against a terraform configuration.
 
-See my [detailed tutorial]() for more usage details.  (Coming soon)
+See my [detailed tutorial](https://dev.to/pwd9000/automated-terraform-tests-for-azure-using-github-actions-4349) for more usage details.  
 
 The following terraform tasks are tested: `fmt`, `validate`, `init`, `plan`, `apply`, `destroy`.  
 Any issues detected in these terraform tasks are commented on the PR and a valid `github_token` is needed.  
