@@ -46,7 +46,7 @@ Additionally tests will include `plan` artifacts of the relevant `apply` and `de
 ```yaml
 steps:
   - name: Run-Tests
-    uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
+    uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.2
     with:
       test_type: plan                          ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
       path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
@@ -98,7 +98,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Plan-Only
-        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.2
         with:
           test_type: plan                          ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
@@ -149,7 +149,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Plan-Apply
-        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.2
         with:
           test_type: plan-apply                    ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
@@ -200,7 +200,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Plan-Apply-Destroy
-        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.0
+        uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.2
         with:
           test_type: plan-apply-destroy            ## (Optional) Valid options are "plan", "plan-apply", "plan-apply-destroy". Default="plan"
           path: "path-to-test-module"              ## (Optional) Specify path TF module relevant to repo root. Default="."
