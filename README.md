@@ -1,5 +1,7 @@
 # Terraform Tests - GitHub Action (terraform-azurerm-tests)
 
+[![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/)
+
 ## Overview
 
 Do you need a quick way to test if your terraform code changes will work?  
