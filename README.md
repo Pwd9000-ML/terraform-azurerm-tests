@@ -97,7 +97,7 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
 
       - name: Plan-Only
         uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.6
@@ -148,7 +148,7 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
 
       - name: Plan-Apply
         uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.6
@@ -199,7 +199,7 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.3
+        uses: actions/checkout@v3.6.0
 
       - name: Plan-Apply-Destroy
         uses: Pwd9000-ML/terraform-azurerm-tests@v1.0.6
