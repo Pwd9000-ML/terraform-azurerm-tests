@@ -76,7 +76,7 @@ runs:
   steps:
     - name: Plan ONLY
       if: ${{ contains(inputs.test_type, 'plan') || contains(inputs.test_type, 'apply') || contains(inputs.test_type, 'destroy') }}
-      uses: Pwd9000-ML/terraform-azurerm-plan@v1.2.6
+      uses: Pwd9000-ML/terraform-azurerm-plan@v1.3.0
       with:
         path: ${{ inputs.path }}
         tf_version: ${{ inputs.tf_version }}
@@ -93,7 +93,7 @@ runs:
 
     - name: Plan -> Apply
       if: ${{ contains(inputs.test_type, 'apply') || contains(inputs.test_type, 'destroy') }}
-      uses: Pwd9000-ML/terraform-azurerm-apply@v1.2.6
+      uses: Pwd9000-ML/terraform-azurerm-apply@v1.3.0
       with:
         tf_version: ${{ inputs.tf_version }}
         tf_key: ${{ inputs.tf_key }}
@@ -107,7 +107,7 @@ runs:
 
     - name: Plan -> Apply -> Destroy (plan)
       if: ${{ contains(inputs.test_type, 'destroy') }}
-      uses: Pwd9000-ML/terraform-azurerm-plan@v1.2.6
+      uses: Pwd9000-ML/terraform-azurerm-plan@v1.3.0
       with:
         path: ${{ inputs.path }}
         plan_mode: "destroy"
@@ -125,7 +125,7 @@ runs:
 
     - name: Plan -> Apply -> Destroy (apply)
       if: ${{ contains(inputs.test_type, 'destroy') }}
-      uses: Pwd9000-ML/terraform-azurerm-apply@v1.2.6
+      uses: Pwd9000-ML/terraform-azurerm-apply@v1.3.0
       with:
         plan_mode: "destroy"
         tf_version: ${{ inputs.tf_version }}
